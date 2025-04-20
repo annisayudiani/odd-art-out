@@ -56,23 +56,36 @@ function App() {
   const [showAnswer, setShowAnswer] = useState(false);
 
   const getRandomUrls = () => {
+    // Hide the answers and the button
     setShowAnswer(false);
 
+    // Pick two random artists from paintings
+    // Assign the first artist as the correctArtist, the second as the incorrectArtist
     const randomArtists = pickRandomItems(Object.keys(paintings), 2);
     const correctArtist = randomArtists[0];
     const incorrectArtist = randomArtists[1];
 
+    // Pick one random painting url from correctArtist
+    // Pick three random painting urls from incorrectArtist
     const correctUrl = pickRandomItems(paintings[correctArtist]);
     const incorrectUrls = pickRandomItems(paintings[incorrectArtist], 3);
 
+    // Combine urls into an array
+    // Shuffle the array to randomize the order of paintings
     const combinedUrls = [...correctUrl, ...incorrectUrls];
     shuffleArray(combinedUrls);
 
+    // Set the correctArtist for the current round
+    // This will be used to determine the correct answer
     setCorrectArtist(correctArtist);
+
+    // Set urls for the current round
     setUrls(combinedUrls);
   }
 
   const fetchImages = () => {
+
+    // Empty the variables from the previous round
     setImages([]);
     setAltTexts([]);
     setArtistNames([]);
@@ -84,33 +97,46 @@ function App() {
       fetch(url)
         .then((response) => response.json())
         .then((json) => {
+          // Fetch painting images
           setImages((prevImages) => [...prevImages, json.primaryImageSmall]);
-          setArtistNames((prevArtistNames) => [...prevArtistNames, json.artistDisplayName]);
-          setTitles((prevTitles) => [...prevTitles, json.title]);
-          setYears((prevYears) => [...prevYears, json.objectEndDate]);
-          setCodes((prevCodes) => [...prevCodes,
-            json.artistDisplayName === correctArtist ? 'a' : 'b']);
 
+          // Fetch artist names of each painting
+          setArtistNames((prevArtistNames) => [...prevArtistNames, json.artistDisplayName]);
+
+          // Fetch painting titles
+          setTitles((prevTitles) => [...prevTitles, json.title]);
+
+          // Fetch painting years
+          setYears((prevYears) => [...prevYears, json.objectEndDate]);
+
+          // Fetch painting information for alt texts
           const tags = json.tags.map((tag) => ` ${tag.term}`);
           setAltTexts((prevAltTexts) => [
             ...prevAltTexts,
             `Title: ${json.title}. Medium: ${json.medium}. Contains:${tags}.`,
           ]);
+
+          // Assign code: a is for the correct answer, b is for the incorrect answers
+          setCodes((prevCodes) => [...prevCodes,
+            json.artistDisplayName === correctArtist ? 'a' : 'b']);
         });
     });
   };
 
+  // Show the answers after players click an image
   const handleImageClick = () => {
     setShowAnswer(true);
   };
 
+  // Get random artists and urls on page load
   useEffect(() => {
     getRandomUrls();
   }, []);
 
+  // Fetch images on page load only after urls are set
   useEffect(() => {
     fetchImages();
-  }, [urls]); // Runs fetchImages only after urls are set
+  }, [urls]);
 
   return (
     <>

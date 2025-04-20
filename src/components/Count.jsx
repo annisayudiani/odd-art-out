@@ -1,5 +1,6 @@
 const Count = () => {
 
+    // Access guess counts from local storage
     const correctGuessCount = Number(localStorage.getItem('correct-count')) || 0;
     const incorrectGuessCount = Number(localStorage.getItem('incorrect-count')) || 0;
 

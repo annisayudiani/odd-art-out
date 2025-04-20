@@ -1,6 +1,8 @@
 const Images = ( {image, altText, artistName, title, year, code, onImageClick, showAnswer} ) => {
 
+  // Add guess counts to local storage
   const handleClick = () => {
+    // Only updates local storage after the first click of each round
     if (!showAnswer) {
       if (code === 'a') {
         const correctCount = Number(localStorage.getItem('correct-count')) || 0;
