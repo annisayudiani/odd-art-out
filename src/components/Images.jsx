@@ -26,7 +26,7 @@ const Images = ( {image, altText, artistName, title, year, code, onImageClick, s
             if (e.key === "Enter")
                 handleClick();
             }}
-          tabIndex={1}
+          tabIndex={0}
         />
         <div className={`description ${showAnswer || `hidden`}`}>
           <h2>Artist: {artistName}</h2>
