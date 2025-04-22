@@ -1,6 +1,23 @@
+/**
+ * Images component to display a painting and its details.
+ * Handles click events to reveal the answer and update the game state.
+ * @param {Object} props - The props for the component.
+ * @param {string} props.image - The URL of the painting image.
+ * @param {string} props.altText - The alt text for the image.
+ * @param {string} props.artistName - The name of the artist.
+ * @param {string} props.title - The title of the painting.
+ * @param {number} props.year - The year the painting was created.
+ * @param {string} props.code - The code indicating whether the painting is correct ('a') or incorrect ('b').
+ * @param {Function} props.onImageClick - The function to call when the image is clicked.
+ * @param {boolean} props.showAnswer - Whether to show the answer.
+ * @returns {JSX.Element} - A component displaying the painting and its details.
+ */
 const Images = ( {image, altText, artistName, title, year, code, onImageClick, showAnswer} ) => {
 
-  // Add guess counts to local storage
+  /**
+   * Handle the click event for the image.
+   * Updates localStorage only after the first click of each round.
+   */
   const handleClick = () => {
     // Only updates local storage after the first click of each round
     if (!showAnswer) {
@@ -11,7 +28,7 @@ const Images = ( {image, altText, artistName, title, year, code, onImageClick, s
         const incorrectCount = Number(localStorage.getItem('incorrect-count')) || 0;
         localStorage.setItem('incorrect-count', incorrectCount + 1);
       }
-      onImageClick();
+      onImageClick(); // Call the parent-provided function
     }
   }
 

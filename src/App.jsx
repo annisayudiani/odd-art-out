@@ -4,18 +4,23 @@ import Images from './components/Images'
 import paintings from './components/util/painting_urls.json'
 import Count from './components/Count'
 
+/**
+ * Main App component for the Odd Art Out game.
+ * Handles the logic for fetching painting data,
+ * managing game state, and rendering components.
+ */
+
 function App() {
 
   /**
-   * Pick n random elements from an array
+   * Pick n random elements from an array.
    * Source: https://labex.io/tutorials/javascript-n-random-elements-in-array-28503
-   * @param {[]} [...arr] - An array
-   * @param {number} [n] - An optional number to determine the number of element(s) in the output. The default value is 1.
-   * @returns {[]} - n random element(s) of the array
+   * @param {Array} arr - The array to pick elements from.
+   * @param {number} [n=1] - The number of elements to pick.
+   * @returns {Array} - An array of n random elements.
    *
    * @example
-   *
-   *    pickRandomItems([a, b, c, d], 3)
+   * pickRandomItems([a, b, c, d], 2) // Returns 2 random elements from the array
    */
   const pickRandomItems = ([...arr], n = 1) => {
     let m = arr.length;
@@ -27,14 +32,13 @@ function App() {
   };
 
   /**
-   * Shuffle elements of an array in-place
+   * Shuffle elements of an array in-place.
    * Source: https://dev.to/codebubb/how-to-shuffle-an-array-in-javascript-2ikj
-   * @param {[]} - An array
-   * @returns {[]} - None
+   * @param {Array} array - The array to shuffle.
+   * @returns {void}
    *
    * @example
-   *
-   *    shuffleArray([a, b, c, d])
+   * shuffleArray([a, b, c, d]) // Shuffles the array in place
    */
   const shuffleArray = (array) => {
     for (let i = array.length - 1; i > 0; i--) {
@@ -45,6 +49,7 @@ function App() {
     }
   }
 
+  // State variables
   const [urls, setUrls] = useState([]);
   const [correctArtist, setCorrectArtist] = useState('');
   const [altTexts, setAltTexts] = useState([]);
@@ -55,6 +60,12 @@ function App() {
   const [codes, setCodes] = useState([]);
   const [showAnswer, setShowAnswer] = useState(false);
 
+  /**
+   * Generate random URLs for the current round.
+   * Picks two random artists, selects one painting from the correct artist,
+   * and three paintings from the incorrect artist. Combines and shuffles the URLs.
+   * @returns {void}
+   */
   const getRandomUrls = () => {
     // Hide the answers and the button
     setShowAnswer(false);
@@ -75,14 +86,16 @@ function App() {
     const combinedUrls = [...correctUrl, ...incorrectUrls];
     shuffleArray(combinedUrls);
 
-    // Set the correctArtist for the current round
-    // This will be used to determine the correct answer
+    // Set the correctArtist and URLs for the current round
     setCorrectArtist(correctArtist);
-
-    // Set urls for the current round
     setUrls(combinedUrls);
   }
 
+  /**
+   * Fetch painting data for the current round.
+   * Resets state variables and fetches data for each URL in the `urls` array.
+   * @returns {void}
+   */
   const fetchImages = () => {
 
     // Empty the variables from the previous round
@@ -116,24 +129,32 @@ function App() {
             `Title: ${json.title}. Medium: ${json.medium}. Contains:${tags}.`,
           ]);
 
-          // Assign code: a is for the correct answer, b is for the incorrect answers
+          // Assign code: 'a' is for the correct answer, 'b' is for the incorrect answers
           setCodes((prevCodes) => [...prevCodes,
             json.artistDisplayName === correctArtist ? 'a' : 'b']);
         });
     });
   };
 
-  // Show the answers after players click an image
+  /**
+   * Handle image click event.
+   * Sets the `showAnswer` state to true to reveal the answers.
+   * @returns {void}
+   */
   const handleImageClick = () => {
     setShowAnswer(true);
   };
 
-  // Get random artists and urls on page load
+  /**
+   * Get random artists and URLs on page load.
+   */
   useEffect(() => {
     getRandomUrls();
   }, []);
 
-  // Fetch images on page load only after urls are set
+  /**
+   * Fetch images on page load after URLs are set.
+   */
   useEffect(() => {
     fetchImages();
   }, [urls]);
