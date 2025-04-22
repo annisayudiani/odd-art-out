@@ -175,7 +175,7 @@ function App() {
         Next Round
       </button>
       <div className='paintings'>
-        {urls.map((url, index) => (
+        {urls.map((_, index) => (
           <Images
             key={index}
             image={images[index]}
